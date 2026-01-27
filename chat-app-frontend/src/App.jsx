@@ -1,110 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import './index.css';
-
-// Services
-import socket from './services/socket';
-import { fetchUsers, fetchMessages, sendMessageAPI } from './services/api';
-
-// Components
-import ChatHeader from './components/ChatHeader';
-import MessageList from './components/MessageList';
-import MessageInput from './components/MessageInput';
-
-const CONVERSATION_ID = 'conv_user1_user2';
+import { useState, useEffect } from 'react';
+import { Row, Col, Container } from 'react-bootstrap';
+import './App.css';
+import Sidebar from './modules/chat/layout/sidebar/Sidebar';
+import Header from './modules/chat/layout/header/Header';
 
 function App() {
-  const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]); // Dynamic users
-  const [currentUser, setCurrentUser] = useState(null);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Join Room
-    socket.emit('join_conversation', CONVERSATION_ID);
-
-    // Initial Load: Users & Messages
-    loadUsers();
-    loadMessages();
-
-    // Socket Listener
-    socket.on('receive_message', (newMessage) => {
-      setMessages((prev) => {
-        // Avoid duplicates if my message
-        if (prev.find(m => m.messageId === newMessage.messageId)) return prev;
-        return [...prev, newMessage];
-      });
-    });
-
-    return () => {
-      socket.off('receive_message');
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsSidebarExpanded(true);
+        setIsMobileSidebarOpen(false);
+      } else {
+        setIsSidebarExpanded(true);
+        setIsMobileSidebarOpen(false);
+      }
     };
+
+    handleResize();
+
   }, []);
 
-  const loadUsers = () => {
-    // Hardcoded users since API fetch is removed
-    const userList = [
-      { uid: 'user1', username: 'vivek', profile_image: 'https://via.placeholder.com/150?text=V' },
-      { uid: 'user2', username: 'mihir', profile_image: 'https://via.placeholder.com/150?text=M' }
-    ];
-    setUsers(userList);
-    setCurrentUser(userList[0]);
-  }
-
-  const loadMessages = async () => {
-    try {
-      const msgs = await fetchMessages(CONVERSATION_ID);
-      setMessages(msgs);
-    } catch (err) {
-      // Error handled in service
+  const toggleSidebarVisibility = () => {
+    if (window.innerWidth < 768) {
+      setIsMobileSidebarOpen(!isMobileSidebarOpen);
+    } else {
+      setIsSidebarExpanded(!isSidebarExpanded);
     }
   };
-
-  const handleSendMessage = async ({ content, file }) => {
-    if (!currentUser) return;
-
-    try {
-      await sendMessageAPI({
-        conversationId: CONVERSATION_ID,
-        senderId: currentUser.uid,
-        content,
-        file
-      });
-      // Message will be added via socket listener or optimistic update could be added here
-    } catch (err) {
-      alert("Failed to send message.");
-    }
-  };
-
-  // Helper to Switch User
-  const switchUser = () => {
-    if (users.length < 2) return;
-    const currentIndex = users.findIndex(u => u.uid === currentUser.uid);
-    const nextIndex = (currentIndex + 1) % users.length;
-    setCurrentUser(users[nextIndex]);
-  }
-
-  if (!currentUser) return <div style={{ padding: 20 }}>Loading Chat...</div>;
 
   return (
-    <div className="app-container" style={{ margin: 'auto', width: '100%', maxWidth: '800px', height: '90vh', backgroundColor: '#fff', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <Container fluid className="p-0 bg-light vh-100 overflow-hidden">
+      <Row className="g-0 h-100">
+        {/* Desktop Sidebar: Adjusts width based on collapsed state */}
+        <div className={`d-none d-md-block h-100 bg-white border-end transition-width`} style={{ width: isSidebarExpanded ? '280px' : '80px', transition: 'width 0.3s ease' }}>
+          <Sidebar isSidebarExpanded={isSidebarExpanded} isMobileOpen={false} />
+        </div>
 
-      <ChatHeader
-        currentUser={currentUser}
-        users={users}
-        onSwitchUser={switchUser}
-      />
+        {/* Mobile Sidebar: Hidden by default, slides in when active */}
+        <div className={`d-md-none position-fixed top-0 start-0 h-100 z-3`} style={{ pointerEvents: 'none' }}>
+          <div style={{ pointerEvents: 'auto' }}>
+            <Sidebar isSidebarExpanded={true} isMobileOpen={isMobileSidebarOpen} />
+          </div>
+        </div>
 
-      <MessageList
-        messages={messages}
-        currentUser={currentUser}
-        users={users}
-      />
+        {/* Mobile Backdrop: Dimmed background when sidebar is open */}
+        {isMobileSidebarOpen && (
+          <div
+            className="d-md-none position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50 z-2"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          ></div>
+        )}
 
-      <MessageInput
-        onSendMessage={handleSendMessage}
-        currentUser={currentUser}
-      />
+        {/* Main Content Area */}
+        <Col className="d-flex flex-column h-100 min-vw-0">
+          <Header toggleSidebarVisibility={toggleSidebarVisibility} />
 
-    </div>
+          <main className="flex-grow-1 p-4 overflow-auto">
+            {/* Dynamic content will be injected here */}
+            <div className="text-center mt-5 text-muted">
+            </div>
+          </main>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

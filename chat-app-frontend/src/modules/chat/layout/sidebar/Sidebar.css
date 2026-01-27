@@ -1,0 +1,113 @@
+.sidebar-navigation {
+    min-height: 100vh;
+    width: 280px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    overflow-x: hidden;
+    /* Prevent content spill during transition */
+    white-space: nowrap;
+    /* Prevent text wrapping */
+}
+
+.sidebar-navigation.collapsed {
+    width: 80px;
+}
+
+/* On mobile, sidebar is hidden by default (moved off-screen) */
+@media (max-width: 768px) {
+    .sidebar-navigation {
+        transform: translateX(-100%);
+        width: 280px;
+        /* Always full width when open on mobile */
+    }
+
+    .sidebar-navigation.show {
+        transform: translateX(0);
+    }
+
+    /* On mobile, we don't collapse to icons, we just hide/show */
+    .sidebar-navigation.collapsed {
+        width: 280px;
+        transform: translateX(-100%);
+    }
+}
+
+/* On desktop, sidebar is static but width changes */
+@media (min-width: 769px) {
+    .sidebar-navigation {
+        position: static;
+        transform: none !important;
+    }
+}
+
+.sidebar-brand-section {
+    height: 70px;
+    /* Match header height */
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    /* Match header padding */
+    transition: all 0.3s;
+}
+
+.collapsed .sidebar-brand-section {
+    justify-content: center;
+    padding: 0;
+    border-bottom: none !important;
+}
+
+.sidebar-menu-item {
+    color: #6c757d;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    /* Replaces gap-3 utility for better control */
+    height: 50px;
+    /* Fixed height for consistency */
+}
+
+.collapsed .sidebar-menu-item {
+    justify-content: center;
+    padding: 0;
+    width: 50px;
+    /* Square effect */
+    margin: 0 auto;
+    /* Center in collapsed sidebar */
+}
+
+.sidebar-menu-item:hover {
+    color: #0d6efd;
+    background-color: #f8f9fa;
+}
+
+.sidebar-menu-item.active {
+    background-color: #0d6efd;
+    color: white !important;
+    box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+}
+
+.collapsed .sidebar-label {
+    display: none;
+    /* Hide label in collapsed state */
+}
+
+/* Hide brand text when collapsed */
+.collapsed .brand-text {
+    display: none;
+}
+
+/* Show short brand or nothing when collapsed */
+.collapsed .brand-short {
+    display: block;
+}
+
+.brand-short {
+    display: none;
+}
