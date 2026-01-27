@@ -1,6 +1,6 @@
 const { initializeApp } = require('firebase/app');
 const { getFirestore } = require('firebase/firestore');
-const firebaseConfig = require('../firebaseConfig'); // Keep the original config file or move its content here. I will just import it.
+const firebaseConfig = require('../firebaseConfig');
 
 let db;
 try {

@@ -23,25 +23,12 @@ export const fetchMessages = async (conversationId) => {
 };
 
 export const sendMessageAPI = async (messageData) => {
-    // messageData: { conversationId, senderId, content, file (optional) }
-    const formData = new FormData();
-    formData.append('conversationId', messageData.conversationId);
-    formData.append('senderId', messageData.senderId);
-    formData.append('content', messageData.content);
-
-    if (messageData.file) {
-        formData.append('file', messageData.file);
-    }
-
+    // messageData: { conversationId, senderId, content }
     try {
-        const res = await axios.post(`${API_URL}/messages`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        const res = await axios.post(`${API_URL}/messages`, messageData);
         return res.data;
     } catch (err) {
-        console.error("Failed to send", err);
+        console.error("Failed to send message:", err);
         throw err;
     }
 };

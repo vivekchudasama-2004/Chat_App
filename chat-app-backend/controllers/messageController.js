@@ -4,17 +4,6 @@ const sendMessage = async (req, res, next) => {
     try {
         const { conversationId, content, senderId } = req.body;
 
-        // Handle file if present
-        let fileBase64 = null;
-        let fileName = null;
-        let fileType = null;
-
-        if (req.file) {
-            fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-            fileName = req.file.originalname;
-            fileType = req.file.mimetype;
-        }
-
         if (!conversationId || !senderId) {
             return res.status(400).json({ error: "Missing required fields" });
         }
@@ -25,19 +14,16 @@ const sendMessage = async (req, res, next) => {
             senderId
         };
 
-        if (fileBase64) {
-            messageData.fileBase64 = fileBase64;
-            messageData.fileName = fileName;
-            messageData.fileType = fileType;
+        // Emit via Socket.io immediately (Optimistic UI)
+        if (req.io) {
+            const optimisticMessage = {
+                ...messageData,
+                message_at: new Date(), 
+            };
+            req.io.to(conversationId).emit('receive_message', optimisticMessage);
         }
 
         const savedMessage = await messageService.createMessage(messageData);
-
-        // Emit via Socket.io
-        // access io from req.io middleware
-        if (req.io) {
-            req.io.to(conversationId).emit('receive_message', savedMessage);
-        }
 
         res.status(201).json(savedMessage);
     } catch (e) {

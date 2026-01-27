@@ -2,13 +2,13 @@
 // Project Settings -> General -> Your apps -> SDK Setup and Configuration (Config)
 
 const firebaseConfig = {
-    apiKey: "REPLACE_WITH_API_KEY",
-    authDomain: "REPLACE_WITH_AUTH_DOMAIN",
-    projectId: "REPLACE_WITH_PROJECT_ID",
-    storageBucket: "REPLACE_WITH_STORAGE_BUCKET",
-    messagingSenderId: "REPLACE_WITH_MESSAGING_SENDER_ID",
-    appId: "REPLACE_WITH_APP_ID",
-    measurementId: "REPLACE_WITH_MEASUREMENT_ID"
+  apiKey: "AIzaSyCkAFW6gY6ZH1GfBxS8MSmPxtZ9Bhl9Ows",
+  authDomain: "real-time-chat-app-2026.firebaseapp.com",
+  projectId: "real-time-chat-app-2026",
+  storageBucket: "real-time-chat-app-2026.firebasestorage.app",
+  messagingSenderId: "963295093216",
+  appId: "1:963295093216:web:86546bfaecb5bf74818b85",
+  measurementId: "G-1N1SD8DTBW"
 };
 
 module.exports = firebaseConfig;

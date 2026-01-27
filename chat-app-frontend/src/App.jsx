@@ -39,17 +39,14 @@ function App() {
     };
   }, []);
 
-  const loadUsers = async () => {
-    try {
-      const userList = await fetchUsers();
-      if (userList.length > 0) {
-        setUsers(userList);
-        // Default to first user if not set
-        setCurrentUser(userList[0]);
-      }
-    } catch (err) {
-      // Error handled in service
-    }
+  const loadUsers = () => {
+    // Hardcoded users since API fetch is removed
+    const userList = [
+      { uid: 'user1', username: 'vivek', profile_image: 'https://via.placeholder.com/150?text=V' },
+      { uid: 'user2', username: 'mihir', profile_image: 'https://via.placeholder.com/150?text=M' }
+    ];
+    setUsers(userList);
+    setCurrentUser(userList[0]);
   }
 
   const loadMessages = async () => {

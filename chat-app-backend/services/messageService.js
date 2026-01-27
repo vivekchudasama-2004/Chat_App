@@ -1,22 +1,31 @@
 const { collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } = require('firebase/firestore');
 const { db } = require('../config/firebase');
 
-const createMessage = async (messageData) => {
-    const dataToSave = {
-        ...messageData,
-        message_at: serverTimestamp()
-    };
+const createMessage = async (message) => {
+    try {
+        // Add server timestamp for ordering
+        const messageToSave = {
+            ...message,
+            message_at: serverTimestamp()
+        };
 
+        if (!db) {
+            console.warn("Firestore db not initialized, cannot save message.");
+            return { ...message, messageId: 'temp_id_' + Date.now() };
+        }
 
-    let savedDocs = { ...messageData, message_at: new Date() };
+        const docRef = await addDoc(collection(db, 'messages'), messageToSave);
 
-    if (db) {
-        const docRef = await addDoc(collection(db, 'messages'), dataToSave);
-        savedDocs.messageId = docRef.id;
-    } else {
-        savedDocs.messageId = 'mock_id_' + Date.now();
+        // Return the message with the new ID and a client-side friendly date
+        return {
+            ...message,
+            messageId: docRef.id,
+            message_at: new Date()
+        };
+    } catch (error) {
+        console.error("Error creating message in Firestore:", error);
+        throw error;
     }
-    return savedDocs;
 };
 
 const getMessages = async (conversationId) => {
