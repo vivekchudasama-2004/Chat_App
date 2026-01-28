@@ -4,7 +4,13 @@
 }
 
 .header-search-container {
-    max-width: 500px;
+    max-width: 400px;
+}
+@media (max-width:768px) and (min-width:900px) {
+    .header-search-container{
+        max-width: 200px;
+        margin-right:20px ;
+    }
 }
 
 .search-input-group {
@@ -52,3 +58,4 @@
 .icon-button:hover {
     background-color: #f8f9fa;
 }
+

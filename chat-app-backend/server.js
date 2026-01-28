@@ -5,6 +5,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 // const { seedUsers } = require('./services/userService');
 const messageRoutes = require('./routes/messageRoutes');
+const userRoutes = require('./routes/userRoutes');
+const { seedUsers } = require('./services/userService');
 
 dotenv.config();
 
@@ -28,6 +30,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/messages', messageRoutes);
+app.use('/api/users', userRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
@@ -35,8 +38,8 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
 });
 
-// // Seed Users on startup
-// seedUsers();
+// Seed Users on startup
+seedUsers();
 
 // Socket.io connection
 io.on('connection', (socket) => {

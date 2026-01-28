@@ -33,18 +33,30 @@ const getMessages = async (conversationId) => {
 
     const q = query(
         collection(db, 'messages'),
-        where('conversationId', '==', conversationId),
-        orderBy('message_at', 'asc')
+        where('conversationId', '==', conversationId)
+        // orderBy('message_at', 'asc') // Removed to avoid "Requires Index" error
     );
 
     const snapshot = await getDocs(q);
+    console.log(`[DB] getMessages query snapshot empty? ${snapshot.empty}`);
     const messages = [];
     snapshot.forEach(doc => {
+        const data = doc.data();
         messages.push({
             messageId: doc.id,
-            ...doc.data()
+            ...data,
+            // Normalize timestamp to ISO string/Date object
+            message_at: data.message_at && data.message_at.toDate ? data.message_at.toDate() : (data.message_at ? new Date(data.message_at) : new Date())
         });
     });
+
+    // Validates dates and Sorts in memory
+    messages.sort((a, b) => {
+        const dateA = new Date(a.message_at);
+        const dateB = new Date(b.message_at);
+        return dateA - dateB;
+    });
+
     return messages;
 };
 

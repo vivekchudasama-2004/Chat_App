@@ -1,32 +1,37 @@
 import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import './Sidebar.css';
-import { sidebarNavigationItems } from './SidebarMenu';
+import { sidebarItems } from './SidebarMenu';
+// import logo from '../../../../../public/logo.PNG'; 
 
-const Sidebar = ({ isSidebarExpanded, isMobileOpen }) => {
-    // Local state to manage active item
-    const [activePath, setActivePath] = useState('/messages');
+
+const Sidebar = ({ isSidebarExpanded: SidebarExpanded, isMobileOpen, activePath, setActivePath }) => {
 
     const handleItemClick = (e, path) => {
-        e.preventDefault(); // Prevent actual navigation for UI demo purposes
+        e.preventDefault();
         setActivePath(path);
     };
 
     return (
-        <div className={`sidebar-navigation bg-white border-end d-flex flex-column ${!isSidebarExpanded ? 'collapsed' : ''} ${isMobileOpen ? 'show' : ''}`}>
-            <div className="sidebar-brand-section border-bottom">
-                {/* Full Logo */}
-                <h4 className="fw-bold mb-0 brand-text text-nowrap">MAX<span className="text-primary">I</span>MUMLIFE</h4>
-                {/* Collapsed Logo - Hidden as per user request for image placement */}
+        <div className={`sidebar-navigation bg-white d-flex flex-column ${!SidebarExpanded ? 'collapsed' : ''} ${isMobileOpen ? 'show' : ''}`}>
+            <div className="sidebar-brand-section ">
+                {/* Logo */}
+                <h4 className="fw-bold mb-0 brand-text text-nowrap">MA<span className="text-primary">X</span>IMUMLIFE</h4>
+                {/* <img src={logo} style={
+                    {
+                        height:"auto",
+                        width:"auto"
+                    }
+                } /> */}
             </div>
 
             <Nav className="flex-column flex-grow-1 p-3 gap-2">
-                {sidebarNavigationItems.map((item, index) => (
+                {sidebarItems.map((item, index) => (
                     <Nav.Link
                         key={index}
                         href={item.path}
                         className={`sidebar-menu-item ${activePath === item.path ? 'active' : ''}`}
-                        title={!isSidebarExpanded ? item.label : ''}
+                        title={!SidebarExpanded ? item.label : ''}
                         onClick={(e) => handleItemClick(e, item.path)}
                     >
                         <span className="fs-5 d-flex align-items-center">{item.icon}</span>

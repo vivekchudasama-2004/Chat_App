@@ -1,11 +1,27 @@
 import React from 'react';
 import { Navbar, Form, InputGroup } from 'react-bootstrap';
-import { BsSearch, BsList, BsPersonCircle, BsEnvelope, BsToggleOn } from 'react-icons/bs';
-import './Header.css';
+import { BsSearch, BsList, BsPersonCircle } from 'react-icons/bs';
+import { CgShoppingBag } from "react-icons/cg";
 
-const Header = ({ toggleSidebarVisibility }) => {
+import './Header.css';
+export const Toggle = ({ handleChange, isChecked }) => {
     return (
-        <Navbar bg="white" expand={false} className="header-navigation border-bottom sticky-top shadow-sm">
+        <div className="toggle-container">
+            <input
+                type="checkbox"
+                id="check"
+                className="toggle"
+                onChange={handleChange}
+                checked={isChecked}
+            />
+            <label htmlFor="check">Dark Mode</label>
+        </div>
+    );
+};
+
+const Header = ({ toggleSidebarVisibility, currentUser, allUsers, onUserSwitch }) => {
+    return (
+        <Navbar bg="white" expand={false} className="header-navigation sticky-top shadow-sm">
             <div className="d-flex align-items-center w-100 h-100">
 
                 {/* Toggle & Search Section */}
@@ -14,7 +30,9 @@ const Header = ({ toggleSidebarVisibility }) => {
                         <BsList className="fs-4 text-secondary" />
                     </div>
 
-                    <Form className="flex-grow-1 header-search-container d-none d-sm-flex">
+                    <Form className="flex-grow-1 header-search-container d-none d-sm-flex" style={{
+                        marginRight: '20px'
+                    }}>
                         <InputGroup className="search-input-group">
                             <InputGroup.Text className="search-icon-container">
                                 <BsSearch className="text-muted" />
@@ -30,16 +48,24 @@ const Header = ({ toggleSidebarVisibility }) => {
                 </div>
 
                 {/* Right Icons Section */}
-                <div className="d-flex align-items-center gap-2 ms-3">
-                    <div className="icon-button text-warning fs-4" title="Theme Toggle">
-                        <BsToggleOn />
+                <div className="d-flex align-items-center gap-2">
+                    <div className="icon-button text-warning fs-6" title="Theme Toggle">
+                        <Form>
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                            />
+                        </Form>
                     </div>
+
                     <div className="icon-button position-relative text-secondary" title="Messages">
-                        <BsEnvelope className="fs-5" />
+                        <CgShoppingBag className="fs-5" />
                     </div>
-                    <div className="d-flex align-items-center gap-2 ms-2">
+
+                    {/* User Profile */}
+                    <div className="d-flex align-items-center gap-2 border-start ps-3 ms-2">
                         <BsPersonCircle className="fs-3 text-secondary" />
-                        <span className="fw-semibold text-dark d-none d-md-block">admin</span>
+                        {currentUser && <span className="fw-semibold text-dark d-none d-md-block ms-1">{currentUser.username}</span>}
                     </div>
                 </div>
             </div>
