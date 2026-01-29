@@ -1,72 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
-import { FaSearch, FaEllipsisV } from 'react-icons/fa';
+import { FaSearch, FaEllipsisV, FaArrowLeft } from 'react-icons/fa';
 import ChatInput from './ChatInput';
 import MessageItem from './MessageItem';
 import { fetchMessages, sendMessage } from '../../../services/apiObject';
+
 import { io } from 'socket.io-client';
 
-const ENDPOINT = "http://localhost:3001"; // Or your backend URL
+const ENDPOINT = "http://localhost:3001";
 
-const ChatWindow = ({ currentUser, selectedUser }) => {
+const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
     const [messages, setMessages] = useState([]);
     const [socket, setSocket] = useState(null);
-    const [isConnected, setIsConnected] = useState(false);
     const messagesEndRef = useRef(null);
 
-    // Socket Connection Management
+    // Socket Connection
     useEffect(() => {
-        console.log("Initializing socket...");
-        const newSocket = io(ENDPOINT, {
-            reconnection: true,
-            reconnectionAttempts: 5
-        });
-
-        newSocket.on('connect', () => {
-            console.log("Socket connected:", newSocket.id);
-            setIsConnected(true);
-            // Re-join room if already selected
-            if (selectedUser && currentUser) {
-                const room = [currentUser.uid, selectedUser.id].sort().join('_');
-                console.log("Joining room after connect:", room);
-                newSocket.emit('join_conversation', room);
-
-                // Add a temporary system message to indicate connection? 
-                // Alternatively, relying on the green badge in header is cleaner.
-            }
-        });
-
-        newSocket.on('disconnect', () => {
-            console.log("Socket disconnected");
-            setIsConnected(false);
-        });
-
-        newSocket.on('connect_error', (err) => {
-            console.error("Socket connection error:", err);
-        });
-
-        newSocket.on('receive_message', (newMessage) => {
-            console.log("Received new message via socket:", newMessage);
-            setMessages((prev) => [...prev, newMessage]);
-        });
-
+        const newSocket = io(ENDPOINT);
         setSocket(newSocket);
 
-        return () => {
-            console.log("Cleaning up socket...");
-            newSocket.disconnect();
-        };
-    }, [currentUser]); // Re-connect only if currentUser changes (identity switch)
+        return () => newSocket.close();
+    }, [currentUser]);
 
-    // Room Management when selectedUser changes
+    // Join Conversation Room
     useEffect(() => {
-        if (!socket || !socket.connected || !selectedUser || !currentUser) return;
+        if (!socket || !selectedUser || !currentUser) return;
 
         const room = [currentUser.uid, selectedUser.id].sort().join('_');
-        console.log("Switching room to:", room);
         socket.emit('join_conversation', room);
 
-    }, [selectedUser, currentUser, socket]);
+        const handleMessage = (newMessage) => {
+            // Append message if it belongs to current room (though backend presumably filters emissions to room)
+            setMessages((prev) => [...prev, newMessage]);
+        };
+
+        socket.on('receive_message', handleMessage);
+
+        return () => {
+            socket.off('receive_message', handleMessage);
+        };
+    }, [socket, selectedUser, currentUser]);
 
     // Fetch History
     useEffect(() => {
@@ -154,6 +127,15 @@ const ChatWindow = ({ currentUser, selectedUser }) => {
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center p-3 border-bottom bg-light bg-opacity-10">
                 <div className="d-flex align-items-center">
+                    {/* Back Button for Mobile/Tablet */}
+                    <Button
+                        variant="link"
+                        className="d-lg-none me-2 text-dark p-0 shadow-none text-decoration-none"
+                        onClick={onBack}
+                    >
+                        <FaArrowLeft size={18} />
+                    </Button>
+
                     {selectedUser.user.avatar && !selectedUser.user.avatar.includes('via.placeholder') ? (
                         <img
                             src={selectedUser.user.avatar}

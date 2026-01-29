@@ -3,56 +3,60 @@ import { Row, Col, Container } from 'react-bootstrap';
 import './App.css';
 import Sidebar from "../src/modules/chat/layout/sidebar/Sidebar";
 import Header from '../src/modules/chat/layout//header/Header';
-import MessagesContainer from './modules/chat/components/MessagesContainer';
+import ChatLayout from './modules/chat/layout/ChatLayout';
+import { fetchUsers } from './services/apiObject';
 
 function App() {
   const [SidebarExpanded, setSidebarExpanded] = useState(true);
   const [MobileSidebar, setMobileSidebar] = useState(false);
   const [activePath, setActivePath] = useState('/messages');
 
-  // Authenticated User State (Lifted from MessagesContainer)
+  // Authenticated User State (Lifted from ChatLayout)
   const [currentUser, setCurrentUser] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
-    // Initial fetch of users
     const loadUsers = async () => {
-      const { fetchUsers } = await import('./services/apiObject');
-      const users = await fetchUsers();
-      setAllUsers(users);
+      try {
+        const users = await fetchUsers();
+        setAllUsers(users);
 
-      // 1. Try URL Param ?uid=...
-      const urlParams = new URLSearchParams(window.location.search);
-      const uidParam = urlParams.get('uid');
+        if (users && users.length > 0) {
+          // Logic to determine current user
+          const urlParams = new URLSearchParams(window.location.search);
+          const uidParam = urlParams.get('uid');
+          const storedUserStr = localStorage.getItem('chat_app_current_user');
 
-      // 2. Try LocalStorage
-      const storedUser = localStorage.getItem('chat_app_current_user');
+          let selected = null;
 
-      let defaultUser = null;
+          // 1. URL Param
+          if (uidParam) {
+            selected = users.find(u => u.uid === uidParam);
+          }
 
-      if (uidParam) {
-        defaultUser = users.find(u => u.uid === uidParam);
-      } else if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
-          defaultUser = users.find(u => u.uid === parsed.uid);
-        } catch (e) {
-          console.error("Invalid stored user", e);
+          // 2. Local Storage
+          if (!selected && storedUserStr) {
+            try {
+              const parsed = JSON.parse(storedUserStr);
+              selected = users.find(u => u.uid === parsed.uid);
+            } catch (e) {
+              console.error("Storage parse error", e);
+            }
+          }
+
+          // 3. Default (Admin or First)
+          if (!selected) {
+            const admin = users.find(u => u.username === 'admin');
+            selected = admin || users[0];
+          }
+
+          setCurrentUser(selected);
+          if (selected) {
+            localStorage.setItem('chat_app_current_user', JSON.stringify(selected));
+          }
         }
-      }
-
-      // 3. Default to admin or first user
-      if (!defaultUser && users.length > 0) {
-        const admin = users.find(u => u.username === 'admin');
-        defaultUser = admin || users[0];
-      }
-
-      if (defaultUser) {
-        setCurrentUser(defaultUser);
-        // Ensure standard state matches stored state
-        if (!storedUser) {
-          localStorage.setItem('chat_app_current_user', JSON.stringify(defaultUser));
-        }
+      } catch (err) {
+        console.error("Failed to load users", err);
       }
     };
     loadUsers();
@@ -127,7 +131,7 @@ function App() {
           <main className="flex-grow-1 p-0 overflow-hidden d-flex flex-column">
             {activePath === '/messages' ? (
               <div className="h-100 w-100">
-                <MessagesContainer currentUser={currentUser} />
+                <ChatLayout currentUser={currentUser} />
               </div>
             ) : (
               <div className="text-center mt-5 text-muted">
