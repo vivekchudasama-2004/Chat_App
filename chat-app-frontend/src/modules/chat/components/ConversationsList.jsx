@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
-import { fetchUsers } from '../../../services/apiObject';
+import { fetchUsers, fetchMessages } from '../../../services/apiObject';
 
 const ConversationsList = ({ currentUser, selectedId, onSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -10,17 +10,48 @@ const ConversationsList = ({ currentUser, selectedId, onSelect }) => {
     useEffect(() => {
         const loadUsers = async () => {
             const users = await fetchUsers();
-            const mappedUsers = users // Show all users including self
-                .map(user => ({
+
+            // Map users to promise of enriched user object
+            const promises = users.map(async (user) => {
+                // if (user.uid === currentUser.uid) return null; // Filter removed to show all users
+
+                const room = [currentUser.uid, user.uid].sort().join('_');
+                let lastMsg = '';
+                let time = '';
+
+                try {
+                    const msgs = await fetchMessages(room);
+                    if (msgs && msgs.length > 0) {
+                        const last = msgs[msgs.length - 1];
+                        lastMsg = last.content;
+
+                        // Format Time
+                        if (last.message_at) {
+                            const dateObj = last.message_at.seconds
+                                ? new Date(last.message_at.seconds * 1000)
+                                : new Date(last.message_at);
+                            if (!isNaN(dateObj)) {
+                                time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error fetching last msg", e);
+                }
+
+                return {
                     id: user.uid,
                     user: {
                         name: user.username,
                         avatar: user.profile_image
                     },
-                    lastMessage: '',
-                    time: '',
-                }));
-            setConversations(mappedUsers);
+                    lastMessage: lastMsg,
+                    time: time,
+                };
+            });
+
+            const results = await Promise.all(promises);
+            setConversations(results.filter(Boolean)); // Filter out nulls (self)
         };
         if (currentUser) {
             loadUsers();
