@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
-import { fetchUsers, fetchMessages } from '../../../services/apiObject';
+import { fetchUsers, fetchMessages } from '../../../../services/apiObject';
 
 const ConversationsList = ({ currentUser, selectedId, onSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');

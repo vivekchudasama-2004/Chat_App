@@ -3,7 +3,7 @@ import { Row, Col, Container } from 'react-bootstrap';
 import './App.css';
 import Sidebar from "../src/modules/chat/layout/sidebar/Sidebar";
 import Header from '../src/modules/chat/layout//header/Header';
-import ChatLayout from './modules/chat/layout/ChatLayout';
+import ChatLayout from './modules/chat/components/ChatLayout';
 import { fetchUsers } from './services/apiObject';
 
 function App() {

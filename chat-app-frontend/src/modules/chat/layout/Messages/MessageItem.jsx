@@ -6,9 +6,10 @@ const MessageItem = ({ message, isMe }) => {
         <div className={`d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'} mb-3`}>
             {/* Sender Name & Time */}
             {/* Design shows name above message for receiver */}
+            {/* Sender Name Removed */}
             {!isMe && (
                 <div className="d-flex align-items-baseline mb-1 ms-1">
-                    <span className="fw-bold small me-2">{message.sender}</span>
+                    {/* Name removed, keeping time if needed or remove entire block if time acts weird alone */}
                     <span className="text-muted extra-small" style={{ fontSize: '0.7rem' }}>{message.time}</span>
                 </div>
             )}

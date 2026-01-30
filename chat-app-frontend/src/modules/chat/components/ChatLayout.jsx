@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
-import ConversationsList from '../components/ConversationsList';
-import ChatWindow from '../components/ChatWindow';
+import ConversationsList from '../layout/chat_list/ConversationsList';
+import ChatWindow from '../layout/chat_window/ChatWindow';
 
 const ChatLayout = ({ currentUser }) => {
     // State to track the currently selected user for chatting

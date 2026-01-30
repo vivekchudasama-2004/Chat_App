@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 import { FaSearch, FaEllipsisV, FaArrowLeft } from 'react-icons/fa';
-import ChatInput from './ChatInput';
-import MessageItem from './MessageItem';
-import { fetchMessages, sendMessage } from '../../../services/apiObject';
+import ChatInput from '../chat_input/ChatInput';
+import MessageItem from '../Messages/MessageItem';
+import { fetchMessages, sendMessage } from '../../../../services/apiObject';
 
 import { io } from 'socket.io-client';
 
@@ -115,9 +115,10 @@ const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
         return {
             id: msg.messageId || index,
             content: msg.content,
-            sender: msg.senderId === currentUser.uid ? 'Me' : selectedUser.user.name,
+            sender: String(msg.senderId) === String(currentUser.uid) ? 'Me' : selectedUser.user.name,
             time: messageTime,
-            isMe: msg.senderId === currentUser.uid,
+            isMe: String(msg.senderId) === String(currentUser.uid),
+            content: msg.content,
             type: msg.type || 'text',
         };
     });

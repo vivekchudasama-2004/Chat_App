@@ -22,7 +22,7 @@ export const Toggle = ({ handleChange, isChecked }) => {
 const Header = ({ toggleSidebarVisibility, currentUser, allUsers, onUserSwitch }) => {
     return (
         <Navbar bg="white" expand={false} className="header-navigation sticky-top shadow-sm">
-            <div className="d-flex align-items-center w-100 h-100">
+            <div className="d-flex align-items-center w-100 h-100 flex-nowrap">
 
                 {/* Toggle & Search Section */}
                 <div className="d-flex align-items-center flex-grow-1">
