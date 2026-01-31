@@ -118,7 +118,6 @@ const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
             sender: String(msg.senderId) === String(currentUser.uid) ? 'Me' : selectedUser.user.name,
             time: messageTime,
             isMe: String(msg.senderId) === String(currentUser.uid),
-            content: msg.content,
             type: msg.type || 'text',
         };
     });
