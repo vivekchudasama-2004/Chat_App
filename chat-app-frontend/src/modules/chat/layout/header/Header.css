@@ -5,11 +5,13 @@
 
 .header-search-container {
     max-width: 400px;
+    margin-right: 20px;
 }
+
 @media (max-width:768px) and (min-width:900px) {
-    .header-search-container{
+    .header-search-container {
         max-width: 200px;
-        margin-right:20px ;
+        margin-right: 20px;
     }
 }
 
@@ -58,4 +60,3 @@
 .icon-button:hover {
     background-color: #f8f9fa;
 }
-

@@ -30,9 +30,7 @@ const Header = ({ toggleSidebarVisibility, currentUser, allUsers, onUserSwitch }
                         <BsList className="fs-4 text-secondary" />
                     </div>
 
-                    <Form className="flex-grow-1 header-search-container d-none d-sm-flex" style={{
-                        marginRight: '20px'
-                    }}>
+                    <Form className="flex-grow-1 header-search-container d-none d-sm-flex">
                         <InputGroup className="search-input-group">
                             <InputGroup.Text className="search-icon-container">
                                 <BsSearch className="text-muted" />

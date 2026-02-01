@@ -1,0 +1,26 @@
+.search-icon {
+    border-radius: 10px 0 0 10px !important;
+}
+
+.search-input {
+    border-radius: 0 10px 10px 0 !important;
+}
+
+.conversation-item {
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+}
+
+.conversation-item.active {
+    background-color: #E8F0FE !important;
+}
+
+.avatar-48 {
+    width: 48px;
+    height: 48px;
+}
+
+.time-text {
+    font-size: 0.75rem;
+}

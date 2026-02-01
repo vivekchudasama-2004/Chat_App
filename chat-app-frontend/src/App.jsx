@@ -94,7 +94,7 @@ function App() {
   return (
     <Container fluid className="p-0 bg-light vh-100 overflow-hidden">
       <Row className="g-0 h-100">
-        <div className={`d-none d-md-block h-100 bg-white border-end transition-width`} style={{ width: SidebarExpanded ? '280px' : '80px', transition: 'width 0.3s ease' }}>
+        <div className={`d-none d-md-block sidebar-container ${SidebarExpanded ? 'expanded' : 'collapsed'}`}>
           <Sidebar
             isSidebarExpanded={SidebarExpanded}
             isMobileOpen={false}
@@ -103,8 +103,8 @@ function App() {
           />
         </div>
 
-        <div className={`d-md-none position-fixed top-0 start-0 h-100 z-3`} style={{ pointerEvents: 'none' }}>
-          <div style={{ pointerEvents: 'auto' }}>
+        <div className={`d-md-none position-fixed top-0 start-0 h-100 z-3 mobile-sidebar-wrapper`}>
+          <div className="mobile-sidebar-content">
             <Sidebar
               isSidebarExpanded={true}
               isMobileOpen={MobileSidebar}

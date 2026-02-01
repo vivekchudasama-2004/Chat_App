@@ -6,6 +6,7 @@ import MessageItem from '../Messages/MessageItem';
 import { fetchMessages, sendMessage } from '../../../../services/apiObject';
 
 import { io } from 'socket.io-client';
+import './ChatWindow.css';
 
 const ENDPOINT = "http://localhost:3001";
 
@@ -30,7 +31,6 @@ const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
         socket.emit('join_conversation', room);
 
         const handleMessage = (newMessage) => {
-            // Append message if it belongs to current room (though backend presumably filters emissions to room)
             setMessages((prev) => [...prev, newMessage]);
         };
 
@@ -78,7 +78,6 @@ const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
         try {
             console.log("Sending message API:", messageData);
             await sendMessage(messageData);
-            // Note: We rely on socket 'receive_message' to update UI
         } catch (error) {
             console.error("Failed to send", error);
         }
@@ -92,15 +91,9 @@ const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
         );
     }
 
-    // Format for display
-    // Map backend message format to UI format if needed
-    // Backend: { content, senderId, message_at, ... }
-    // UI expects: { id, content, sender, time, isMe, type... }
-
     const uiMessages = messages.map((msg, index) => {
         let messageTime = '';
         if (msg.message_at) {
-            // Handle Firestore Timestamp (seconds/nanoseconds) or standard Date/string
             const dateObj = msg.message_at.seconds
                 ? new Date(msg.message_at.seconds * 1000)
                 : new Date(msg.message_at);
@@ -140,13 +133,11 @@ const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
                         <img
                             src={selectedUser.user.avatar}
                             alt={selectedUser.user.name}
-                            className="rounded-circle me-3 border"
-                            style={{ width: '40px', height: '40px' }}
+                            className="rounded-circle me-3 border header-avatar"
                         />
                     ) : (
                         <div
-                            className="rounded-circle me-3 bg-secondary d-flex align-items-center justify-content-center text-white"
-                            style={{ width: '40px', height: '40px' }}
+                            className="rounded-circle me-3 bg-secondary d-flex align-items-center justify-content-center text-white header-avatar"
                         >
                             <span className="fs-6">{selectedUser.user.name.substring(0, 2).toUpperCase()}</span>
                         </div>
@@ -164,7 +155,7 @@ const ChatWindow = ({ currentUser, selectedUser, onBack }) => {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-grow-1 overflow-auto p-4 bg-white" style={{ scrollBehavior: 'smooth' }}>
+            <div className="flex-grow-1 overflow-auto p-4 bg-white messages-area">
                 {uiMessages.map((msg) => (
                     <MessageItem key={msg.id} message={msg} isMe={msg.isMe} />
                 ))}

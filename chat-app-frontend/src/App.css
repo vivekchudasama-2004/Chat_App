@@ -46,3 +46,28 @@ body {
     min-width: 350px;
   }
 }
+
+/* Sidebar Container */
+.sidebar-container {
+  height: 100%;
+  background-color: white;
+  border-right: 1px solid #dee2e6; /* border-end equivalent */
+  transition: width 0.3s ease;
+}
+
+.sidebar-container.expanded {
+  width: 280px;
+}
+
+.sidebar-container.collapsed {
+  width: 80px;
+}
+
+/* Mobile Sidebar Wrapper */
+.mobile-sidebar-wrapper {
+  pointer-events: none;
+}
+
+.mobile-sidebar-content {
+  pointer-events: auto;
+}

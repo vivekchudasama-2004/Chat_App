@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { FaPaperPlane, FaPaperclip, FaMicrophone, FaSmile } from 'react-icons/fa';
+import './ChatInput.css';
 
 const ChatInput = ({ onSend }) => {
     const [message, setMessage] = useState('');
@@ -25,10 +26,9 @@ const ChatInput = ({ onSend }) => {
                     {/* Text Input */}
                     <Form.Control
                         placeholder="Type your message..."
-                        className="bg-transparent border-0 shadow-none"
+                        className="bg-transparent border-0 shadow-none chat-input-field"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        style={{ fontSize: '0.95rem' }}
                     />
 
                     {/* Right Side Icons */}
@@ -43,12 +43,10 @@ const ChatInput = ({ onSend }) => {
                         {/* Send Button */}
                         <Button
                             type="submit"
-                            className="btn btn-primary rounded-3 text-white d-flex align-items-center justify-content-center ms-2"
-                            style={{ width: '40px', height: '40px', padding: 0 }}
+                            className="btn btn-primary rounded-3 text-white d-flex align-items-center justify-content-center ms-2 send-button"
                             disabled={!message.trim()}
                         >
                             <span className="small fw-bold">Send</span>
-                            {/* Note: Design shows just "Send" or Icon. Using simple button for now matching screenshot somewhat */}
                         </Button>
                     </div>
                 </InputGroup>

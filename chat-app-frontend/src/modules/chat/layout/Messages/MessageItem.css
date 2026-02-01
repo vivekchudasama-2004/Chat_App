@@ -1,0 +1,28 @@
+.message-time {
+    font-size: 0.7rem;
+}
+
+.message-bubble {
+    max-width: 70%;
+    border-radius: 18px;
+}
+
+.message-bubble.me {
+    border-top-right-radius: 4px;
+    border-top-left-radius: 18px;
+}
+
+.message-bubble.other {
+    border-top-right-radius: 18px;
+    border-top-left-radius: 4px;
+}
+
+.message-image-placeholder {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+}
+
+.message-text {
+    font-size: 0.95rem;
+}
